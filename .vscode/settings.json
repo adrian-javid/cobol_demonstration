@@ -1,0 +1,7 @@
+{
+	"files.readonlyInclude": {
+		"build/**": true,
+		"cobol_to_webassembly/build/**": true,
+		"website/generated/**": true
+	}
+}

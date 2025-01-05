@@ -30,6 +30,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Dependencies for Building with GNU AutoTools
+        run: |
+          apt-get install autopoint --yes
+
       - name: Install Emscripten
         run: |
           sudo apt-get install git --yes

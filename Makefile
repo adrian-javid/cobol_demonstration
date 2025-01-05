@@ -14,7 +14,7 @@ AGGREGATE_OBJECT_LIST := ${CPLUSPLUS_BINARY_OBJECT_LIST} ${COBOL_BINARY_OBJECT_L
 
 RECIPE_DEPENDENCY_LIST := $(AGGREGATE_OBJECT_LIST:.o=.o.d)
 
-COB_CONFIG := ../cobol_to_webassembly/build/libraries/bin/cob-config
+COB_CONFIG := cob-config
 
 COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS := -MMD -MP $(shell ${COB_CONFIG} --cflags)
 $(info Strange: $(shell ${COB_CONFIG} --cflags))
@@ -24,7 +24,7 @@ LINK_FLAGS := #(empty string)
 TARGET_DIR := ${BUILD_DIR}/artifact
 TARGET := ${TARGET_DIR}/app
 
-COBOL_COMPILER := ../cobol_to_webassembly/build/libraries/bin/cobc
+COBOL_COMPILER := cobc
 
 ifeq (${platform},native)
 TARGET := ${BUILD_DIR}/artifact/app

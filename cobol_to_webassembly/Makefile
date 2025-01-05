@@ -28,10 +28,7 @@ put_libcob_header: build/webassembly/libraries/lib/libcob.a
 	@install --verbose --compare build/webassembly/external_source_code/${LIB_COB_NAME}/libcob.h ${dir}
 
 install: build/binary_objects/libcob.so
-	@if [ -z '$(strip ${dir})' ]; then \
-		printf '`dir` is improperly set as "${dir}". Please specify a valid installation directory.\n' >&2; \
-		false; \
-	fi
+	$(call CHECK_DIR)
 	@install --verbose --compare $(word 1,$^) ${dir}
 	@install --verbose --compare --directory ${dir}/include
 	@install --verbose --compare build/external_source_code/${LIB_COB_NAME}/libcob.h ${dir}/include

@@ -1,9 +1,9 @@
 platform := native
 
-BUILD_DIR := build/${platform}
-
 CPLUSPLUS_SOURCE_LIST := $(wildcard source_code/*.cpp)
 COBOL_SOURCE_LIST := $(wildcard source_code/*.cbl)
+
+BUILD_DIR := build/${platform}
 
 COBOL_TRANSPILED_C_SOURCE_LIST := $(patsubst source_code/%,${BUILD_DIR}/c_source_code/%.c,${COBOL_SOURCE_LIST})
 
@@ -24,8 +24,11 @@ TARGET_DIR := ${BUILD_DIR}/artifact
 TARGET := ${TARGET_DIR}/app
 
 COBOL_COMPILER := cobc
+ifeq (${platform},webassembly)
+COBOL_COMPILER := cobol_to_webassembly/build/native/libraries/bin/cobc
+endif
 
-GENERATED_HEADERS := #(empty string)
+COMPILATION_PREREQUISITES := #(empty string)
 
 ifeq (${platform},native)
 TARGET := ${BUILD_DIR}/artifact/app
@@ -41,7 +44,7 @@ COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly
 PATH_TO_STATIC_LIB_COB := cobol_to_webassembly/build/webassembly/libraries/lib/libcob.a
 PATH_TO_STATIC_LIB_GMP := cobol_to_webassembly/build/webassembly/libraries/lib/libgmp.a
 AGGREGATE_OBJECT_LIST += ${PATH_TO_STATIC_LIB_COB} ${PATH_TO_STATIC_LIB_GMP}
-GENERATED_HEADERS += ${BUILD_DIR}/generated_headers/libcob.h
+COMPILATION_PREREQUISITES += ${BUILD_DIR}/generated_headers/libcob.h cobol_to_webassembly/build/native/libraries/bin/cobc
 else
 $(error Unsupported platform ${platform}.)
 endif
@@ -51,11 +54,11 @@ ${TARGET} &: ${AGGREGATE_OBJECT_LIST} | ${TARGET_DIR}/
 	${CPLUSPLUS_COMPILER} $^ ${LINK_FLAGS} -o $(word 1,${TARGET})
 
 # Compile C++ source code to binary objects.
-${CPLUSPLUS_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: source_code/% | ${BUILD_DIR}/binary_objects/ ${GENERATED_HEADERS}
+${CPLUSPLUS_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: source_code/% | ${BUILD_DIR}/binary_objects/ ${COMPILATION_PREREQUISITES}
 	${CPLUSPLUS_COMPILER} ${COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS} ${CPLUSPLUS_COMPILE_FLAGS} -c $< -o $@
 
 # Compile COBOL transpiled C source code to binary objects.
-${COBOL_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: ${BUILD_DIR}/c_source_code/% | ${BUILD_DIR}/binary_objects/ ${GENERATED_HEADERS}
+${COBOL_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: ${BUILD_DIR}/c_source_code/% | ${BUILD_DIR}/binary_objects/ ${COMPILATION_PREREQUISITES}
 	${C_COMPILER} ${COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS} -c $< -o $@
 
 # Transpile COBOL source code to C source code.
@@ -65,6 +68,9 @@ ${COBOL_TRANSPILED_C_SOURCE_LIST}: ${BUILD_DIR}/c_source_code/%.c: source_code/%
 ifeq (${platform},webassembly)
 ${BUILD_DIR}/generated_headers/libcob.h: | ${BUILD_DIR}/generated_headers/
 	cd cobol_to_webassembly && ${MAKE} put_libcob_header dir=$(abspath ${BUILD_DIR}/generated_headers)
+
+cobol_to_webassembly/build/native/libraries/bin/cobc:
+	cd cobol_to_webassembly && ${MAKE} build/native/libraries/bin/cobc
 endif
 
 # Make a directory.

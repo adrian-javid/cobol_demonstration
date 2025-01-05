@@ -14,11 +14,13 @@ AGGREGATE_OBJECT_LIST := ${CPLUSPLUS_BINARY_OBJECT_LIST} ${COBOL_BINARY_OBJECT_L
 
 RECIPE_DEPENDENCY_LIST := $(AGGREGATE_OBJECT_LIST:.o=.o.d)
 
-COB_CONFIG := cob-config
+COB_CONFIG := cobol_to_webassembly/build/native/libraries/bin/cob-config
 
-COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS := -MMD -MP $(shell ${COB_CONFIG} --cflags)
+# Not using `$(shell ...)` here because `cob-config` may not be built yet.
+COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS := -O0 -g3 -MMD -MP $$(${COB_CONFIG} --cflags)
+
 CPLUSPLUS_COMPILE_FLAGS := #(empty string)
-LINK_FLAGS := #(empty string)
+LINK_FLAGS := -O0 -g3
 
 TARGET_DIR := ${BUILD_DIR}/artifact
 TARGET := ${TARGET_DIR}/app
@@ -28,13 +30,14 @@ ifeq (${platform},webassembly)
 COBOL_COMPILER := cobol_to_webassembly/build/native/libraries/bin/cobc
 endif
 
-COMPILATION_PREREQUISITES := #(empty string)
+COMPILATION_PREREQUISITES := cobol_to_webassembly/build/native/libraries/bin/cobc
 
 ifeq (${platform},native)
 TARGET := ${BUILD_DIR}/artifact/app
 CPLUSPLUS_COMPILER := g++
 C_COMPILER := gcc
-LINK_FLAGS += $(shell ${COB_CONFIG} --libs)
+# Not using `$(shell ...)` here because `cob-config` may not be built yet.
+LINK_FLAGS += $$(${COB_CONFIG} --libs)
 else ifeq (${platform},webassembly)
 TARGET_DIR := website/generated
 TARGET := ${TARGET_DIR}/app.js ${TARGET_DIR}/app.wasm
@@ -44,7 +47,7 @@ COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly
 PATH_TO_STATIC_LIB_COB := cobol_to_webassembly/build/webassembly/libraries/lib/libcob.a
 PATH_TO_STATIC_LIB_GMP := cobol_to_webassembly/build/webassembly/libraries/lib/libgmp.a
 AGGREGATE_OBJECT_LIST += ${PATH_TO_STATIC_LIB_COB} ${PATH_TO_STATIC_LIB_GMP}
-COMPILATION_PREREQUISITES += ${BUILD_DIR}/generated_headers/libcob.h cobol_to_webassembly/build/native/libraries/bin/cobc
+COMPILATION_PREREQUISITES += ${BUILD_DIR}/generated_headers/libcob.h
 else
 $(error Unsupported platform ${platform}.)
 endif

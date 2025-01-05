@@ -30,9 +30,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Install Dependencies for Building with GNU AutoTools
+        run: |
+          sudo apt-get install autopoint --yes
+
       - name: Install Emscripten
         run: |
-          sudo apt-get install git --yes
           git clone https://github.com/emscripten-core/emsdk.git
           cd emsdk
           ./emsdk install 3.1.70

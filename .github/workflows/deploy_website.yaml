@@ -32,7 +32,7 @@ jobs:
 
       - name: Install Dependencies for Building with GNU AutoTools
         run: |
-          apt-get install autopoint --yes
+          sudo apt-get install autopoint --yes
 
       - name: Install Emscripten
         run: |

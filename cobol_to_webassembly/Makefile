@@ -13,19 +13,29 @@ include $(wildcard *.mk)
 %/:
 	@mkdir --parents --verbose $@
 
-.PHONY: install delete_download_cache
+.PHONY: put_libcob_header install delete_download_cache
 
-INSTALL_DIR := #(empty string)
+dir := #(empty string)
 
-install: build/binary_objects/libcob.so
-	@if [ -z '$(strip ${INSTALL_DIR})' ]; then \
-		printf '`INSTALL_DIR` is improperly set as "${INSTALL_DIR}". Please specify a valid installation directory.\n' >&2; \
+CHECK_DIR := \
+	@if [ -z '$(strip ${dir})' ]; then \
+		printf '`dir` is improperly set as "${dir}". Please specify a valid directory.\n' >&2; \
 		false; \
 	fi
-	@install --verbose --compare $(word 1,$^) ${INSTALL_DIR}
-	@install --verbose --compare --directory ${INSTALL_DIR}/include
-	@install --verbose --compare build/external_source_code/${LIB_COB_NAME}/libcob.h ${INSTALL_DIR}/include
-	@cp --verbose --recursive build/libraries/include ${INSTALL_DIR}
+
+put_libcob_header: build/webassembly/libraries/lib/libcob.a
+	$(call CHECK_DIR)
+	@install --verbose --compare build/webassembly/external_source_code/${LIB_COB_NAME}/libcob.h ${dir}
+
+install: build/binary_objects/libcob.so
+	@if [ -z '$(strip ${dir})' ]; then \
+		printf '`dir` is improperly set as "${dir}". Please specify a valid installation directory.\n' >&2; \
+		false; \
+	fi
+	@install --verbose --compare $(word 1,$^) ${dir}
+	@install --verbose --compare --directory ${dir}/include
+	@install --verbose --compare build/external_source_code/${LIB_COB_NAME}/libcob.h ${dir}/include
+	@cp --verbose --recursive build/libraries/include ${dir}
 
 delete_download_cache:
 	@rm --recursive --force --verbose -- build/download_cache

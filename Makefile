@@ -17,7 +17,6 @@ RECIPE_DEPENDENCY_LIST := $(AGGREGATE_OBJECT_LIST:.o=.o.d)
 COB_CONFIG := cob-config
 
 COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS := -MMD -MP $(shell ${COB_CONFIG} --cflags)
-$(info Strange: $(shell ${COB_CONFIG} --cflags))
 CPLUSPLUS_COMPILE_FLAGS := #(empty string)
 LINK_FLAGS := #(empty string)
 
@@ -26,19 +25,23 @@ TARGET := ${TARGET_DIR}/app
 
 COBOL_COMPILER := cobc
 
+GENERATED_HEADERS := #(empty string)
+
 ifeq (${platform},native)
 TARGET := ${BUILD_DIR}/artifact/app
 CPLUSPLUS_COMPILER := g++
 C_COMPILER := gcc
 LINK_FLAGS += $(shell ${COB_CONFIG} --libs)
-$(info Strange: $(shell ${COB_CONFIG} --libs))
 else ifeq (${platform},webassembly)
 TARGET_DIR := website/generated
 TARGET := ${TARGET_DIR}/app.js ${TARGET_DIR}/app.wasm
 CPLUSPLUS_COMPILER := em++
 C_COMPILER := emcc
-COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Iexternal/include
-AGGREGATE_OBJECT_LIST += external/libcob.so
+COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly/libraries/include -I${BUILD_DIR}/generated_headers
+PATH_TO_STATIC_LIB_COB := cobol_to_webassembly/build/webassembly/libraries/lib/libcob.a
+PATH_TO_STATIC_LIB_GMP := cobol_to_webassembly/build/webassembly/libraries/lib/libgmp.a
+AGGREGATE_OBJECT_LIST += ${PATH_TO_STATIC_LIB_COB} ${PATH_TO_STATIC_LIB_GMP}
+GENERATED_HEADERS += ${BUILD_DIR}/generated_headers/libcob.h
 else
 $(error Unsupported platform ${platform}.)
 endif
@@ -48,16 +51,21 @@ ${TARGET} &: ${AGGREGATE_OBJECT_LIST} | ${TARGET_DIR}/
 	${CPLUSPLUS_COMPILER} $^ ${LINK_FLAGS} -o $(word 1,${TARGET})
 
 # Compile C++ source code to binary objects.
-${CPLUSPLUS_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: source_code/% | ${BUILD_DIR}/binary_objects/
+${CPLUSPLUS_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: source_code/% | ${BUILD_DIR}/binary_objects/ ${GENERATED_HEADERS}
 	${CPLUSPLUS_COMPILER} ${COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS} ${CPLUSPLUS_COMPILE_FLAGS} -c $< -o $@
 
 # Compile COBOL transpiled C source code to binary objects.
-${COBOL_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: ${BUILD_DIR}/c_source_code/% | ${BUILD_DIR}/binary_objects/
+${COBOL_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: ${BUILD_DIR}/c_source_code/% | ${BUILD_DIR}/binary_objects/ ${GENERATED_HEADERS}
 	${C_COMPILER} ${COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS} -c $< -o $@
 
 # Transpile COBOL source code to C source code.
 ${COBOL_TRANSPILED_C_SOURCE_LIST}: ${BUILD_DIR}/c_source_code/%.c: source_code/% | ${BUILD_DIR}/c_source_code/
 	${COBOL_COMPILER} -fixed -debug -verbose=2 -Wall -C $< -o $@
+
+ifeq (${platform},webassembly)
+${BUILD_DIR}/generated_headers/libcob.h: | ${BUILD_DIR}/generated_headers/
+	cd cobol_to_webassembly && ${MAKE} put_libcob_header dir=$(abspath ${BUILD_DIR}/generated_headers)
+endif
 
 # Make a directory.
 %/:

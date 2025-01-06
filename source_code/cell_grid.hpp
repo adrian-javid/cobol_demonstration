@@ -28,7 +28,7 @@ namespace App {class CellGrid final {
 
 		inline std::size_t getRowCount() const { return this->rowCount; }
 
-		inline std::size_t getColumnCount() const {return this->columnCount; }
+		inline std::size_t getColumnCount() const { return this->columnCount; }
 
 		void update();
 

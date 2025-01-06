@@ -1,5 +1,6 @@
 #include "cell_grid.hpp"
 
+#include <utility>
 #include "player_cell.hpp"
 
 App::CellGrid::CellGrid(
@@ -63,18 +64,28 @@ void App::CellGrid::update() {
 	this->currentCellColor = Cell::getNextColor(this->currentCellColor);
 }
 
-[[nodiscard]]
 App::CellGrid::TableT::value_type const & App::CellGrid::operator[](CellGridKey const &key) const {
-	std::size_t const flatIndex{getFlatIndex(key, this->columnCount)};
+	static constexpr auto wrapValue = [](
+		CellGridKey::Value value, std::size_t const length
+	) constexpr -> CellGridKey::Value {
+		value %= length;
+		if (value < 0) value += length;
+		return value;
+	};
+
+	CellGridKey wrappedKey{
+		wrapValue(key.value0, this->getRowCount()),
+		wrapValue(key.value1, this->getColumnCount())
+	};
+
+	std::size_t const flatIndex{getFlatIndex(wrappedKey, this->columnCount)};
 	return this->table.at(flatIndex);
 }
 
-auto App::CellGrid::operator[](CellGridKey const &key) -> decltype(table)::value_type & {
-	std::size_t const flatIndex{getFlatIndex(key, this->columnCount)};
-	return this->table.at(flatIndex);
+App::CellGrid::TableT::value_type & App::CellGrid::operator[](CellGridKey const &key) {
+	return const_cast<App::CellGrid::TableT::value_type &>(std::as_const(*this)[key]);
 }
 
-[[nodiscard]]
 auto App::CellGrid::getCell(CellIdentifier const cellIdentifier) -> Cell & {
 	switch (cellIdentifier) {
 		case CellIdentifier::player:

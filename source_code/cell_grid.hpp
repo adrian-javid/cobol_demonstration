@@ -24,12 +24,9 @@ namespace App {class CellGrid final {
 		}
 
 	private:
-		std::vector<
-			std::unordered_set<
-				std::unique_ptr<Cell>
-			>
-		> table;
+		std::vector<std::unordered_set<std::unique_ptr<Cell>>> table;
 		std::size_t rowCount{}, columnCount{};
+		Cell::Color currentCellColor{Cell::getFirstColor()};
 
 		[[nodiscard]]
 		decltype(table)::value_type & operator[](CellGridKey const &key);

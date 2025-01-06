@@ -1,5 +1,4 @@
 
-#include <stddef.h>
 #ifndef EMSCRIPTEN
 #include <libcob.h>
 #else
@@ -8,8 +7,6 @@
 
 #include "extern.hpp"
 #include <iostream>
-
-#include <cstdio>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

@@ -92,16 +92,24 @@ auto App::MainContext::drawCellGrid(CellGrid const &cellGrid) -> void {
 			assert(rowIndex >= 0 and rowIndex < cellGrid.getRowCount());
 			assert(colIndex >= 0 and colIndex < cellGrid.getColumnCount());
 
-			auto const &cellGroup = cellGrid[{rowIndex, colIndex}];
+			auto const &cellGroup = cellGrid[{
+				static_cast<CellGridKey::Value>(rowIndex),
+				static_cast<CellGridKey::Value>(colIndex)
+			}];
 
-			SDL_Color rectangleColor{};
-			if (cellGroup.size() > 0) {
-				rectangleColor = SDL_Color{164, 224, 208, 255};
-			} else if (false) {
-				rectangleColor = SDL_Color{110, 152, 123, 255};
-			} else {
-				rectangleColor = SDL_Color{210, 180, 140, 255};
-			}
+			static constexpr SDL_Color playerColor{252, 3, 140, 0xFF};
+			static constexpr SDL_Color workerColor{3, 19, 252, 0xFF};
+			static constexpr SDL_Color backgroundColor{92, 96, 158, 0xFF};
+
+			SDL_Color const rectangleColor([&cellGroup]() -> SDL_Color {
+				if (cellGroup.empty()) {
+					return backgroundColor;
+				} else if (cellGroup.contains(CellGrid::CellIdentifier::player)) {
+					return playerColor;
+				} else {
+					return workerColor;
+				}
+			}());
 
 			SDL_FPoint const northwestCorner = {
 				/* x */ static_cast<float>(colIndex) * cellWidth,

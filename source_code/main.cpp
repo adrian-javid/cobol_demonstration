@@ -6,7 +6,7 @@
 #include "libcob.h"
 #endif
 
-#include "extern.h"
+#include "extern.hpp"
 #include <iostream>
 
 #include <cstdio>

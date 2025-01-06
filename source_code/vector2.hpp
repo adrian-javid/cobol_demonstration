@@ -32,6 +32,12 @@ namespace App {
 			}
 
 			[[nodiscard]]
+			constexpr bool operator==(Vector2 const &vector) const = default;
+
+			[[nodiscard]]
+			constexpr bool operator!=(Vector2 const &vector) const = default;
+
+			[[nodiscard]]
 			static constexpr Vector2 getDirection(Direction const direction) {
 				switch (direction) {
 					using enum Direction;

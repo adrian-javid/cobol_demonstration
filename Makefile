@@ -66,7 +66,7 @@ ${COBOL_BINARY_OBJECT_LIST}: ${BUILD_DIR}/binary_objects/%.o: ${BUILD_DIR}/c_sou
 
 # Transpile COBOL source code to C source code.
 ${COBOL_TRANSPILED_C_SOURCE_LIST}: ${BUILD_DIR}/c_source_code/%.c: source_code/% | ${BUILD_DIR}/c_source_code/
-	${COBOL_COMPILER} -fixed -debug -verbose=2 -Wall -C $< -o $@
+	${COBOL_COMPILER} -fixed -fstatic-call -debug -verbose=2 -Wall -C $< -o $@
 
 ifeq (${platform},webassembly)
 ${BUILD_DIR}/generated_headers/libcob.h: | ${BUILD_DIR}/generated_headers/

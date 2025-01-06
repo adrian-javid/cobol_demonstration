@@ -1,15 +1,12 @@
 
-#include <stddef.h>
 #ifndef EMSCRIPTEN
 #include <libcob.h>
 #else
 #include "libcob.h"
 #endif
 
-#include "extern.h"
+#include "extern.hpp"
 #include <iostream>
-
-#include <cstdio>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -26,7 +23,6 @@ int main(int const argCount, char **const argList) {
 	cob_init(int{0}, nullptr);
 	#endif
 
-	// This likely closes standard output
 	int const exitCode = cobol_main();
 
 	#ifdef __EMSCRIPTEN__

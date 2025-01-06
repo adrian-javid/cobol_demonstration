@@ -11,7 +11,7 @@ App::CellGrid::CellGrid(
 	rowCount{rowCountParam},
 	columnCount{columnCountParam}
 {
-	(*this)[{5, 5}].emplace(CellIdentifier::player);
+	(*this)[{10, 20}].emplace(CellIdentifier::player);
 }
 
 void App::CellGrid::setPlayerMovement(Direction const direction) {

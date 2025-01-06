@@ -36,18 +36,20 @@ ifeq (${platform},native)
 TARGET := ${BUILD_DIR}/artifact/app
 CPLUSPLUS_COMPILER := g++
 C_COMPILER := gcc
+COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += $(shell pkg-config --cflags sdl2)
 # Not using `$(shell ...)` here because `cob-config` may not be built yet.
-LINK_FLAGS += $$(${COB_CONFIG} --libs)
+LINK_FLAGS += $$(${COB_CONFIG} --libs) $(shell pkg-config --libs sdl2)
 else ifeq (${platform},webassembly)
 TARGET_DIR := website/generated
 TARGET := ${TARGET_DIR}/app.js ${TARGET_DIR}/app.wasm
 CPLUSPLUS_COMPILER := em++
 C_COMPILER := emcc
-COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly/libraries/include -I${BUILD_DIR}/generated_headers
+COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly/libraries/include -I${BUILD_DIR}/generated_headers --use-port=sdl2
 PATH_TO_STATIC_LIB_COB := cobol_to_webassembly/build/webassembly/libraries/lib/libcob.a
 PATH_TO_STATIC_LIB_GMP := cobol_to_webassembly/build/webassembly/libraries/lib/libgmp.a
 AGGREGATE_OBJECT_LIST += ${PATH_TO_STATIC_LIB_COB} ${PATH_TO_STATIC_LIB_GMP}
 COMPILATION_PREREQUISITES += ${BUILD_DIR}/generated_headers/libcob.h
+LINK_FLAGS += --use-port=sdl2
 else
 $(error Unsupported platform ${platform}.)
 endif

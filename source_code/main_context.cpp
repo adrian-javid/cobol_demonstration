@@ -110,7 +110,7 @@ auto App::MainContext::drawCellGrid(CellGrid const &cellGrid) -> void {
 				}
 			}());
 
-			SDL_FPoint const northwestCorner = {
+			SDL_FPoint const northwestCorner{
 				/* x */ static_cast<float>(colIndex) * cellWidth,
 				/* y */ static_cast<float>(rowIndex) * cellHeight,
 			};

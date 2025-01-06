@@ -98,7 +98,7 @@ auto App::MainContext::drawCellGrid(CellGrid const &cellGrid) -> void {
 
 			static constexpr SDL_Color playerColor{252, 3, 140, 0xFF};
 			static constexpr SDL_Color workerColor{3, 19, 252, 0xFF};
-			static constexpr SDL_Color backgroundColor{92, 96, 158, 0xFF};
+			static constexpr SDL_Color backgroundColor{51, 156, 204, 0xFF};
 
 			SDL_Color const rectangleColor([&cellGroup]() -> SDL_Color {
 				if (cellGroup.empty()) {

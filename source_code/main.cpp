@@ -15,6 +15,39 @@
 #endif
 #endif
 
+#include "cell_grid.hpp"
+
+#include "main_context.hpp"
+
+namespace App {
+	static CellGrid cellGrid(CellGrid::makeFromStringCanvas());
+
+	static void mainLoop(void) {
+		for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type) {
+			case SDL_KEYDOWN: switch (event.key.keysym.sym) {
+				case SDLK_BACKQUOTE:
+					break;
+				case SDLK_ESCAPE:
+					break;
+			} break;
+			case SDL_WINDOWEVENT: switch (event.window.event) {
+				case /* (user initiated resize) */SDL_WINDOWEVENT_RESIZED:
+				case SDL_WINDOWEVENT_SIZE_CHANGED:
+					static_cast<void>(event.window.data1);
+					static_cast<void>(event.window.data2);
+					break;
+			} break;
+			case SDL_QUIT:
+				std::exit(EXIT_SUCCESS);
+				break;
+		}
+		
+		MainContext::drawCellGrid(cellGrid);
+
+		SDL_RenderPresent(MainContext::renderer);
+	}
+}
+
 int main(int const argCount, char **const argList) {
 	#if true
 	cob_init(argCount, argList);
@@ -22,6 +55,8 @@ int main(int const argCount, char **const argList) {
 	// Don't pass command line arguments.
 	cob_init(int{0}, nullptr);
 	#endif
+
+	App::MainContext::initialize();
 
 	int const exitCode = cobol_main();
 
@@ -62,9 +97,9 @@ int main(int const argCount, char **const argList) {
 		it will be cleaned up before the main loop is called for the first time."
 		(https://emscripten.org/docs/api_reference/emscripten.h.html#id3)
 	*/
-	emscripten_set_main_loop(+[]() -> void { return; }, -1, true);
+	emscripten_set_main_loop(&mainLoop, -1, true);
 	#else
-	while (true) continue;
+	while (true) App::mainLoop();
 	cob_tidy();
 	#endif
 

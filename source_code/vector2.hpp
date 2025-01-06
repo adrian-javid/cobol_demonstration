@@ -22,8 +22,13 @@ namespace App {
 			{}
 
 			[[nodiscard]]
-			Vector2 operator+(Vector2 const &vector) const {
+			constexpr Vector2 operator+(Vector2 const &vector) const {
 				return {this->value0 + vector.value0, this->value1 + vector.value1};
+			}
+
+			[[nodiscard]]
+			constexpr Vector2 operator-(Vector2 const &vector) const {
+				return {this->value0 - vector.value0, this->value1 - vector.value1};
 			}
 
 			[[nodiscard]]

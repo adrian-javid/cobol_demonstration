@@ -20,27 +20,28 @@ void App::CellGrid::update() {
 			auto &cellGroup = (*this)[currentLocation];
 
 			for (
-				auto cellPointerIterator = cellGroup.begin();
-				cellPointerIterator != cellGroup.end();
+				auto cellIdentifierIterator = cellGroup.begin();
+				cellIdentifierIterator != cellGroup.end();
 			) {
-				auto const &cellPointer = *cellPointerIterator;
+				CellIdentifier const cellIdentifier(std::move(*cellIdentifierIterator));
+				std::unique_ptr<Cell> const &cellPointer = this->cellRegistry.at(cellIdentifier);
 				if (cellPointer == nullptr) throw std::logic_error("Null cell pointer.");
 
 				if (cellPointer->getColor() == this->currentCellColor) {
-					Cell::Request const &request = cellPointer->update();
+					Cell::Request const request = cellPointer->update();
 					
 					if (request.movement != Direction::none) {
 						CellGridKey const targetLocation(currentLocation + CellGridKey::getDirection(request.movement));
-						(*this)[targetLocation].emplace(cellPointer);
-						cellPointerIterator = cellGroup.erase(cellPointerIterator);
+						(*this)[targetLocation].emplace(cellIdentifier);
+						cellIdentifierIterator = cellGroup.erase(cellIdentifierIterator);
 					} else {
-						++cellPointerIterator;
+						++cellIdentifierIterator;
 					}
 
 					continue;
 				}
 
-				++cellPointerIterator;
+				++cellIdentifierIterator;
 			}
 
 		}

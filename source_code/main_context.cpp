@@ -1,6 +1,7 @@
 #include "main_context.hpp"
 
 #include <stdexcept>
+#include <cassert>
 
 SDL_Window *App::MainContext::window = nullptr;
 SDL_Renderer *App::MainContext::renderer = nullptr;
@@ -42,29 +43,69 @@ auto App::MainContext::initialize() -> void {
 		renderer = SDL_CreateRenderer(window, -1, 0u);
 }
 
+void App::MainContext::drawQuadrilateral(
+	SDL_FPoint const &northwestPoint, SDL_FPoint const &northeastPoint,
+	SDL_FPoint const &southwestPoint, SDL_FPoint const &southeastPoint,
+	SDL_Color  const &northwestColor, SDL_Color  const &northeastColor,
+	SDL_Color  const &southwestColor, SDL_Color  const &southeastColor
+) {
+	static constexpr SDL_FPoint zeroPoint{0, 0};
+
+	SDL_Vertex const topLeftVertex{northwestPoint, northwestColor, zeroPoint};
+	SDL_Vertex const topRightVertex{northeastPoint, northeastColor, zeroPoint};
+	SDL_Vertex const bottomLeftVertex{southwestPoint, southwestColor, zeroPoint};
+	SDL_Vertex const bottomRightVertex{southeastPoint, southeastColor, zeroPoint};
+
+	static constexpr int vertexCount{2 * (3)};
+	std::array<SDL_Vertex, vertexCount> const vertexList{
+		// Top left triangle.
+		topLeftVertex, topRightVertex, bottomLeftVertex,
+
+		// Bottom right triangle.
+		topRightVertex, bottomLeftVertex, bottomRightVertex,
+	};
+
+	SDL_RenderGeometry(renderer, nullptr, vertexList.data(), vertexCount, nullptr, 0);
+}
+
+#include <iostream>
 auto App::MainContext::drawCellGrid(CellGrid const &cellGrid) -> void {
-	int const cellWidth = windowWidth / cellGrid.getColumnCount();
-	int const cellHeight = windowWidth / cellGrid.getRowCount();
+	float const cellWidth = static_cast<float>(windowWidth) / static_cast<float>(cellGrid.getColumnCount());
+	float const cellHeight = static_cast<float>(windowHeight) / static_cast<float>(cellGrid.getRowCount());
 
 	for (std::size_t rowIndex{0}; rowIndex < cellGrid.getRowCount(); ++rowIndex) {
 		for (std::size_t colIndex{0}; colIndex < cellGrid.getColumnCount(); ++colIndex) {
-
-			SDL_Rect const rectangle = {
-				colIndex * cellWidth, rowIndex * cellHeight,
-				cellWidth,
-				cellHeight
-			};
+			assert(rowIndex >= 0 and rowIndex < cellGrid.getRowCount());
+			assert(colIndex >= 0 and colIndex < cellGrid.getColumnCount());
 
 			auto const &cellGroup = cellGrid[{rowIndex, colIndex}];
 
+			SDL_Color rectangleColor{};
 			if (cellGroup.size() > 0) {
-				SDL_SetRenderDrawColor(renderer, 64, 224, 208, 255);
+				rectangleColor = SDL_Color{164, 224, 208, 255};
+			} else if (colIndex % 2 == 0) {
+				rectangleColor = SDL_Color{110, 152, 123, 255};
 			} else {
-				SDL_SetRenderDrawColor(renderer, 210, 180, 140, 255);
+				rectangleColor = SDL_Color{210, 180, 140, 255};
 			}
 
-			// Draw a filled rectangle
-			SDL_RenderFillRect(renderer, &rectangle);
+			SDL_FPoint const northwestCorner = {
+				/* x */ static_cast<float>(colIndex) * cellWidth,
+				/* y */ static_cast<float>(rowIndex) * cellHeight,
+			};
+
+			SDL_FPoint const northeastCorner{northwestCorner.x + cellWidth, northwestCorner.y};
+
+			SDL_FPoint const southwestCorner{northwestCorner.x, northwestCorner.y + cellHeight};
+
+			SDL_FPoint const southeastCorner{northwestCorner.x + cellWidth, northwestCorner.y + cellHeight};
+
+			drawQuadrilateral(
+				northwestCorner, northeastCorner,
+				southwestCorner, southeastCorner,
+				rectangleColor, rectangleColor,
+				rectangleColor, rectangleColor
+			);
 		}
 	}
 }

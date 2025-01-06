@@ -66,7 +66,7 @@ void App::CellGrid::update() {
 
 App::CellGrid::TableT::value_type const & App::CellGrid::operator[](CellGridKey const &key) const {
 	static constexpr auto wrapValue = [](
-		CellGridKey::Value value, std::size_t const length
+		CellGridKey::Value value, CellGridKey::Value const length
 	) constexpr -> CellGridKey::Value {
 		value %= length;
 		if (value < 0) value += length;

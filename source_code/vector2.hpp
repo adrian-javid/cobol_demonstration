@@ -3,6 +3,7 @@
 #include "direction.hpp"
 #include <array>
 #include <cstdint>
+#include <stdexcept>
 
 namespace App {
 	template <typename ValueT>

@@ -7,6 +7,16 @@ SDL_Window *App::MainContext::window = nullptr;
 SDL_Renderer *App::MainContext::renderer = nullptr;
 Uint8 const *App::MainContext::keyboardState = nullptr;
 
+namespace App::MainContext {
+	static Uint64 deltaTime{}, lastTime{};
+}
+
+Uint64 App::MainContext::getDeltaTime() {
+	Uint64 const thisTime{SDL_GetTicks64()};
+	deltaTime = thisTime - lastTime;
+	lastTime = thisTime;
+	return deltaTime;
+}
 
 auto App::MainContext::initialize() -> void {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {

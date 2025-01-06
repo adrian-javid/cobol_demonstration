@@ -9,7 +9,27 @@ auto App::CellGrid::makeFromStringCanvas() -> CellGrid {
 
 	std::vector<CellGridKey> workerTargetLocations;
 
-	CellGrid grid(10, 78);
+	static constexpr std::size_t rowCount{[]() constexpr -> std::size_t {
+		std::size_t newlineCount{0};
+		for (char const value : stringCanvas) if (value == '\n') ++newlineCount;
+
+		if (newlineCount == 0) throw std::logic_error("There should be at least the leading newline.");
+
+		return newlineCount - 1;
+	}()};
+
+	static constexpr std::size_t columnCount{[]() constexpr -> std::size_t {
+		std::size_t spaceCount{0};
+		for (
+			auto iterator = stringCanvas.begin() + 1;
+			iterator != stringCanvas.end() and *iterator != '\n';
+			++iterator, ++spaceCount
+		);
+
+		return spaceCount;
+	}()};
+
+	CellGrid grid(rowCount, columnCount);
 	for (CellGridKey::Value rowIndex{0}; rowIndex < grid.getRowCount(); ++rowIndex) {
 		for (CellGridKey::Value columnIndex{0}; columnIndex < grid.getColumnCount(); ++columnIndex) {
 			CellGridKey::Value const flatIndex{

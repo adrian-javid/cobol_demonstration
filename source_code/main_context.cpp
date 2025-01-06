@@ -35,7 +35,7 @@ auto App::MainContext::initialize() -> void {
 		"COBOL Demonstration",
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		windowWidth, windowHeight,
-		SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE
+		SDL_WINDOW_SHOWN
 	);
 
 	renderer = SDL_CreateRenderer(

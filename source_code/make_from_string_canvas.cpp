@@ -5,8 +5,6 @@
 #include <random>
 
 auto App::CellGrid::makeFromStringCanvas() -> CellGrid {
-	CellGrid grid(10, 78);
-
 	CellGridKey currentLocation{0, 0};
 
 	std::vector<CellGridKey> workerTargetLocations;
@@ -34,5 +32,6 @@ auto App::CellGrid::makeFromStringCanvas() -> CellGrid {
 
 	std::shuffle(workerTargetLocations.begin(), workerTargetLocations.end(), randomNumberGenerator);
 
+	CellGrid grid(10, 78);
 	return grid;
 }

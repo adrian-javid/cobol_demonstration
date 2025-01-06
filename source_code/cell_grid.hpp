@@ -34,9 +34,14 @@ namespace App {class CellGrid final {
 			return rowIndex * columnCount + columnIndex;
 		}
 
-	private:
 		enum struct CellIdentifier : std::size_t { player = 0 };
-		std::vector<std::unordered_set<CellIdentifier>> table;
+		using TableT = std::vector<std::unordered_set<CellIdentifier>>;
+
+		[[nodiscard]]
+		TableT::value_type const & operator[](CellGridKey const &key) const;
+
+	private:
+		TableT table;
 		std::unordered_map<CellIdentifier, WorkerCell> workerCellRegistry;
 		PlayerCell playerCell;
 		std::size_t rowCount{}, columnCount{};

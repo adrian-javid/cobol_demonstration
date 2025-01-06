@@ -7,9 +7,9 @@ namespace App {class PlayerCell final : public Cell {
 		[[nodiscard]]
 		inline explicit PlayerCell() {};
 
-	private:
 		Direction movement{Direction::none};
 
+	private:
 		[[nodiscard]]
 		Request makeRequest(CellGridKey const &currentLocation) override;
 };}

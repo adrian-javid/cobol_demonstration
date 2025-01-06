@@ -41,7 +41,7 @@ namespace App {
 				std::exit(EXIT_SUCCESS);
 				break;
 		}
-		
+
 		MainContext::drawCellGrid(cellGrid);
 
 		SDL_RenderPresent(MainContext::renderer);

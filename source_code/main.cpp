@@ -22,7 +22,7 @@
 namespace App {
 	static CellGrid cellGrid(CellGrid::makeFromStringCanvas());
 
-	static Timer cellGridUpdateTimer(Timer::oneSecond / (32u * 0 + 8u));
+	static Timer cellGridUpdateTimer(Timer::oneSecond / (64u));
 
 	static void mainLoop(void) {
 		for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type) {

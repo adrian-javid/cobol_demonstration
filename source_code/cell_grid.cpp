@@ -61,6 +61,12 @@ void App::CellGrid::update() {
 	this->currentCellColor = Cell::getNextColor(this->currentCellColor);
 }
 
+[[nodiscard]]
+App::CellGrid::TableT::value_type const & App::CellGrid::operator[](CellGridKey const &key) const {
+	std::size_t const flatIndex{getFlatIndex(key, this->columnCount)};
+	return this->table[flatIndex];
+}
+
 auto App::CellGrid::operator[](CellGridKey const &key) -> decltype(table)::value_type & {
 	std::size_t const flatIndex{getFlatIndex(key, this->columnCount)};
 	return this->table[flatIndex];

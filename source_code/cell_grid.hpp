@@ -23,6 +23,9 @@ namespace App {class CellGrid final {
 
 		[[nodiscard]]
 		static CellGrid makeFromStringCanvas();
+		inline std::size_t getRowCount() const { return this->rowCount; }
+
+		inline std::size_t getColumnCount() const {return this->columnCount; }
 
 		void update();
 

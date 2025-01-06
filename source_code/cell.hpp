@@ -13,9 +13,9 @@ namespace App {class Cell {
 		enum struct Color : std::uint_least8_t { red, blue };
 
 		[[nodiscard]]
-		inline Request const & update() {
+		inline Request update(CellGridKey const &currentLocation) {
 			this->color = getNextColor(this->color);
-			return updateRequest();
+			return makeRequest(currentLocation);
 		}
 
 		[[nodiscard]]
@@ -38,7 +38,8 @@ namespace App {class Cell {
 		virtual ~Cell() = default;
 
 	protected:
-		virtual Request const & updateRequest() = 0;
+		[[nodiscard]]
+		virtual Request makeRequest(CellGridKey const &currentLocation) = 0;
 
 	private:
 		Color color{getFirstColor()};

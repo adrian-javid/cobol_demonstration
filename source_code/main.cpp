@@ -113,9 +113,9 @@ int main(int const argCount, char **const argList) {
 	#endif
 
 	#ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(+[]() -> void { App_mainLoop(); }, -1, true);
+	emscripten_set_main_loop(+[]() -> void { FromCobol::App_mainLoop(); }, -1, true);
 	#else
-	while (true) App_mainLoop();
+	while (true) FromCobol::App_mainLoop();
 	#endif
 
 	return EXIT_SUCCESS;

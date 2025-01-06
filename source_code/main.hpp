@@ -9,7 +9,9 @@ namespace App::MainContext {
 	extern Timer cellGridUpdateTimer;
 }
 
-extern "C" int App_mainLoop(void);
+namespace FromCobol {
+	extern "C" int App_mainLoop(void);
+}
 
 extern "C" {
 	int App_processEvents(void);

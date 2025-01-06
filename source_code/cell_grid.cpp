@@ -28,7 +28,7 @@ void App::CellGrid::update() {
 				if (cellPointer == nullptr) throw std::logic_error("Null cell pointer.");
 
 				if (cellPointer->getColor() == this->currentCellColor) {
-					Cell::Request const request = cellPointer->update();
+					Cell::Request const request = cellPointer->update(currentLocation);
 					
 					if (request.movement != Direction::none) {
 						CellGridKey const targetLocation(currentLocation + CellGridKey::getDirection(request.movement));

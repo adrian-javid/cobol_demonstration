@@ -43,10 +43,22 @@ namespace App {
 		}
 
 		/* keyboard state */ {
-			if (MainContext::keyboardState[SDL_SCANCODE_UP   ]) cellGrid.setPlayerMovement(Direction::north);
-			if (MainContext::keyboardState[SDL_SCANCODE_DOWN ]) cellGrid.setPlayerMovement(Direction::south);
-			if (MainContext::keyboardState[SDL_SCANCODE_LEFT ]) cellGrid.setPlayerMovement(Direction::west);
-			if (MainContext::keyboardState[SDL_SCANCODE_RIGHT]) cellGrid.setPlayerMovement(Direction::east);
+			CellGridKey directionVector{0, 0};
+			if (MainContext::keyboardState[SDL_SCANCODE_UP   ]) directionVector.value0 -= 1;
+			if (MainContext::keyboardState[SDL_SCANCODE_DOWN ]) directionVector.value0 += 1;
+			if (MainContext::keyboardState[SDL_SCANCODE_LEFT ]) directionVector.value1 -= 1;
+			if (MainContext::keyboardState[SDL_SCANCODE_RIGHT]) directionVector.value1 += 1;
+
+			Direction direction{Direction::none};
+			if (std::abs(directionVector.value0) > 0) {
+				if (directionVector.value0 < 0) direction = Direction::north;
+				else direction = Direction::south;
+			} else if (std::abs(directionVector.value1) > 0) {
+				if (directionVector.value1 < 0) direction = Direction::west;
+				else direction = Direction::east;
+			}
+
+			cellGrid.setPlayerMovement(direction);
 		}
 
 		cellGrid.update();

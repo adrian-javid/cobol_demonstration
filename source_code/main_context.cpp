@@ -82,7 +82,6 @@ void App::MainContext::drawQuadrilateral(
 	SDL_RenderGeometry(renderer, nullptr, vertexList.data(), vertexCount, nullptr, 0);
 }
 
-#include <iostream>
 auto App::MainContext::drawCellGrid(CellGrid const &cellGrid) -> void {
 	float const cellWidth = static_cast<float>(windowWidth) / static_cast<float>(cellGrid.getColumnCount());
 	float const cellHeight = static_cast<float>(windowHeight) / static_cast<float>(cellGrid.getRowCount());

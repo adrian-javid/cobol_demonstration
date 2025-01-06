@@ -4,7 +4,13 @@ root = true
 indent_style = tab
 indent_size = 4
 
-[build/c_source_code/**]
+[**.hpp]
+indent_size = 3
+
+[**.{cbl,cob}]
+indent_style = space
+
+[build/*/c_source_code/**]
 indent_style = space
 indent_size = 2
 

@@ -12,14 +12,14 @@ COBOL_BINARY_OBJECT_LIST := $(patsubst ${BUILD_DIR}/c_source_code/%,${BUILD_DIR}
 
 AGGREGATE_OBJECT_LIST := ${CPLUSPLUS_BINARY_OBJECT_LIST} ${COBOL_BINARY_OBJECT_LIST}
 
-RECIPE_DEPENDENCY_LIST := $(AGGREGATE_OBJECT_LIST:.o=.o.d)
+RECIPE_DEPENDENCY_LIST := $(AGGREGATE_OBJECT_LIST:.o=.d)
 
 COB_CONFIG := cobol_to_webassembly/build/native/libraries/bin/cob-config
 
 # Not using `$(shell ...)` here because `cob-config` may not be built yet.
 COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS := -O0 -g3 -MMD -MP $$(${COB_CONFIG} --cflags)
 
-CPLUSPLUS_COMPILE_FLAGS := #(empty string)
+CPLUSPLUS_COMPILE_FLAGS := -std=c++20
 LINK_FLAGS := -O0 -g3
 
 TARGET_DIR := ${BUILD_DIR}/artifact
@@ -36,18 +36,20 @@ ifeq (${platform},native)
 TARGET := ${BUILD_DIR}/artifact/app
 CPLUSPLUS_COMPILER := g++
 C_COMPILER := gcc
+COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += $(shell pkg-config --cflags sdl2)
 # Not using `$(shell ...)` here because `cob-config` may not be built yet.
-LINK_FLAGS += $$(${COB_CONFIG} --libs)
+LINK_FLAGS += $$(${COB_CONFIG} --libs) $(shell pkg-config --libs sdl2)
 else ifeq (${platform},webassembly)
 TARGET_DIR := website/generated
 TARGET := ${TARGET_DIR}/app.js ${TARGET_DIR}/app.wasm
 CPLUSPLUS_COMPILER := em++
 C_COMPILER := emcc
-COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly/libraries/include -I${BUILD_DIR}/generated_headers
+COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS += -Icobol_to_webassembly/build/webassembly/libraries/include -I${BUILD_DIR}/generated_headers --use-port=sdl2
 PATH_TO_STATIC_LIB_COB := cobol_to_webassembly/build/webassembly/libraries/lib/libcob.a
 PATH_TO_STATIC_LIB_GMP := cobol_to_webassembly/build/webassembly/libraries/lib/libgmp.a
 AGGREGATE_OBJECT_LIST += ${PATH_TO_STATIC_LIB_COB} ${PATH_TO_STATIC_LIB_GMP}
 COMPILATION_PREREQUISITES += ${BUILD_DIR}/generated_headers/libcob.h
+LINK_FLAGS += --use-port=sdl2
 else
 $(error Unsupported platform ${platform}.)
 endif

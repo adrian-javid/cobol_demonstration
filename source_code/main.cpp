@@ -23,7 +23,6 @@ int main(int const argCount, char **const argList) {
 	cob_init(int{0}, nullptr);
 	#endif
 
-	// This likely closes standard output
 	int const exitCode = cobol_main();
 
 	#ifdef __EMSCRIPTEN__

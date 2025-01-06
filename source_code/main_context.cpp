@@ -5,6 +5,8 @@
 
 SDL_Window *App::MainContext::window = nullptr;
 SDL_Renderer *App::MainContext::renderer = nullptr;
+Uint8 const *App::MainContext::keyboardState = nullptr;
+
 
 auto App::MainContext::initialize() -> void {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
@@ -41,6 +43,8 @@ auto App::MainContext::initialize() -> void {
 
 	if (renderer == nullptr)
 		renderer = SDL_CreateRenderer(window, -1, 0u);
+
+	keyboardState = SDL_GetKeyboardState(nullptr);
 }
 
 void App::MainContext::drawQuadrilateral(
@@ -83,7 +87,7 @@ auto App::MainContext::drawCellGrid(CellGrid const &cellGrid) -> void {
 			SDL_Color rectangleColor{};
 			if (cellGroup.size() > 0) {
 				rectangleColor = SDL_Color{164, 224, 208, 255};
-			} else if (colIndex % 2 == 0) {
+			} else if (false) {
 				rectangleColor = SDL_Color{110, 152, 123, 255};
 			} else {
 				rectangleColor = SDL_Color{210, 180, 140, 255};

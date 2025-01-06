@@ -9,7 +9,9 @@ App::CellGrid::CellGrid(
 	table(rowCountParam * columnCountParam),
 	rowCount{rowCountParam},
 	columnCount{columnCountParam}
-{}
+{
+	(*this)[{5, 5}].emplace(CellIdentifier::player);
+}
 
 void App::CellGrid::setPlayerMovement(Direction const direction) {
 	this->playerCell.movement = direction;

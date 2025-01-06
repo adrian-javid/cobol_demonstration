@@ -7,6 +7,7 @@ namespace App::MainContext {
 	extern SDL_Window *window;
 	inline constexpr int windowWidth{800}, windowHeight{600};
 	extern SDL_Renderer *renderer;
+	extern Uint8 const *keyboardState;
 
 	void initialize();
 	auto drawCellGrid(CellGrid const &cellGrid) -> void;

@@ -42,6 +42,15 @@ namespace App {
 				break;
 		}
 
+		/* keyboard state */ {
+			if (MainContext::keyboardState[SDL_SCANCODE_UP   ]) cellGrid.setPlayerMovement(Direction::north);
+			if (MainContext::keyboardState[SDL_SCANCODE_DOWN ]) cellGrid.setPlayerMovement(Direction::south);
+			if (MainContext::keyboardState[SDL_SCANCODE_LEFT ]) cellGrid.setPlayerMovement(Direction::west);
+			if (MainContext::keyboardState[SDL_SCANCODE_RIGHT]) cellGrid.setPlayerMovement(Direction::east);
+		}
+
+		cellGrid.update();
+
 		MainContext::drawCellGrid(cellGrid);
 
 		SDL_RenderPresent(MainContext::renderer);

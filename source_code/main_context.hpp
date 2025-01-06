@@ -19,5 +19,5 @@ namespace App::MainContext {
 		SDL_Color  const &southwestColor, SDL_Color  const &southeastColor
 	);
 
-	Uint64 getDeltaTime();
+	Uint64 updateDeltaTime();
 }

@@ -11,7 +11,7 @@ namespace App::MainContext {
 	static Uint64 deltaTime{}, lastTime{};
 }
 
-Uint64 App::MainContext::getDeltaTime() {
+Uint64 App::MainContext::updateDeltaTime() {
 	Uint64 const thisTime{SDL_GetTicks64()};
 	deltaTime = thisTime - lastTime;
 	lastTime = thisTime;

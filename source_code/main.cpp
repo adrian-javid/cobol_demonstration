@@ -16,11 +16,13 @@
 #endif
 
 #include "cell_grid.hpp"
-
+#include "timer.hpp"
 #include "main_context.hpp"
 
 namespace App {
 	static CellGrid cellGrid(CellGrid::makeFromStringCanvas());
+
+	static Timer cellGridUpdateTimer(Timer::oneSecond / 32u);
 
 	static void mainLoop(void) {
 		for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type) {
@@ -61,7 +63,9 @@ namespace App {
 			cellGrid.setPlayerMovement(direction);
 		}
 
-		cellGrid.update();
+		Uint64 const deltaTimeMilliseconds{MainContext::updateDeltaTime()};
+
+		if (cellGridUpdateTimer.update(deltaTimeMilliseconds)) cellGrid.update();
 
 		MainContext::drawCellGrid(cellGrid);
 

@@ -32,8 +32,8 @@ auto App::CellGrid::makeFromStringCanvas() -> CellGrid {
 	CellGrid grid(rowCount, columnCount);
 	for (CellGridKey::Value rowIndex{0}; rowIndex < grid.getRowCount(); ++rowIndex) {
 		for (CellGridKey::Value columnIndex{0}; columnIndex < grid.getColumnCount(); ++columnIndex) {
-			CellGridKey::Value const flatIndex{
-				/* leading newline */1 + rowIndex * (grid.getColumnCount() + /* trailing newline */1) + columnIndex
+			std::size_t const flatIndex{
+				/* leading newline */std::size_t{1} + static_cast<std::size_t>(rowIndex) * (grid.getColumnCount() + /* trailing newline */std::size_t{1}) + static_cast<std::size_t>(columnIndex)
 			};
 
 			switch (stringCanvas.at(flatIndex)) {

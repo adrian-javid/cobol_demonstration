@@ -1,3 +1,4 @@
+#include "main.hpp"
 
 #ifndef EMSCRIPTEN
 #include <libcob.h>
@@ -5,8 +6,6 @@
 #include "libcob.h"
 #endif
 
-#include "extern.hpp"
-#include <iostream>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -15,75 +14,70 @@
 #endif
 #endif
 
-#include "cell_grid.hpp"
-#include "timer.hpp"
-#include "main_context.hpp"
+#include <iostream>
 
-namespace App {
-	static CellGrid cellGrid(CellGrid::makeFromStringCanvas());
+namespace App::MainContext {
+	CellGrid cellGrid(CellGrid::makeFromStringCanvas());
+	Timer cellGridUpdateTimer(Timer::oneSecond / 64u);
+}
 
-	static Timer cellGridUpdateTimer(Timer::oneSecond / 64u);
-
-	static void mainLoop(void) {
-		for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type) {
-			case SDL_KEYDOWN: switch (event.key.keysym.sym) {
-				case SDLK_BACKQUOTE:
-					break;
-				case SDLK_ESCAPE:
-					break;
-			} break;
-			case SDL_WINDOWEVENT: switch (event.window.event) {
-				case /* (user initiated resize) */SDL_WINDOWEVENT_RESIZED:
-				case SDL_WINDOWEVENT_SIZE_CHANGED:
-					static_cast<void>(event.window.data1);
-					static_cast<void>(event.window.data2);
-					break;
-			} break;
-			case SDL_QUIT:
-				std::exit(EXIT_SUCCESS);
+void App_processEvents(void) {
+	for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type) {
+		case SDL_KEYDOWN: switch (event.key.keysym.sym) {
+			case SDLK_BACKQUOTE:
 				break;
-		}
-
-		/* keyboard state */ {
-			CellGridKey directionVector{0, 0};
-			if (MainContext::keyboardState[SDL_SCANCODE_UP   ]) directionVector.value0 -= 1;
-			if (MainContext::keyboardState[SDL_SCANCODE_DOWN ]) directionVector.value0 += 1;
-			if (MainContext::keyboardState[SDL_SCANCODE_LEFT ]) directionVector.value1 -= 1;
-			if (MainContext::keyboardState[SDL_SCANCODE_RIGHT]) directionVector.value1 += 1;
-
-			Direction direction{Direction::none};
-			if (std::abs(directionVector.value0) > 0) {
-				if (directionVector.value0 < 0) direction = Direction::north;
-				else direction = Direction::south;
-			} else if (std::abs(directionVector.value1) > 0) {
-				if (directionVector.value1 < 0) direction = Direction::west;
-				else direction = Direction::east;
-			}
-
-			cellGrid.setPlayerMovement(direction);
-		}
-
-		Uint64 const deltaTimeMilliseconds{MainContext::updateDeltaTime()};
-
-		if (cellGridUpdateTimer.update(deltaTimeMilliseconds)) cellGrid.update();
-
-		MainContext::drawCellGrid(cellGrid);
-
-		SDL_RenderPresent(MainContext::renderer);
+			case SDLK_ESCAPE:
+				break;
+		} break;
+		case SDL_WINDOWEVENT: switch (event.window.event) {
+			case /* (user initiated resize) */SDL_WINDOWEVENT_RESIZED:
+			case SDL_WINDOWEVENT_SIZE_CHANGED:
+				static_cast<void>(event.window.data1);
+				static_cast<void>(event.window.data2);
+				break;
+		} break;
+		case SDL_QUIT:
+			std::exit(EXIT_SUCCESS);
+			break;
 	}
 }
 
+void App_processKeyboardInput(void) {
+	App::CellGridKey directionVector{0, 0};
+	if (App::MainContext::keyboardState[SDL_SCANCODE_UP   ]) directionVector.value0 -= 1;
+	if (App::MainContext::keyboardState[SDL_SCANCODE_DOWN ]) directionVector.value0 += 1;
+	if (App::MainContext::keyboardState[SDL_SCANCODE_LEFT ]) directionVector.value1 -= 1;
+	if (App::MainContext::keyboardState[SDL_SCANCODE_RIGHT]) directionVector.value1 += 1;
+
+	App::Direction direction{App::Direction::none};
+	if (std::abs(directionVector.value0) > 0) {
+		if (directionVector.value0 < 0) direction = App::Direction::north;
+		else direction = App::Direction::south;
+	} else if (std::abs(directionVector.value1) > 0) {
+		if (directionVector.value1 < 0) direction = App::Direction::west;
+		else direction = App::Direction::east;
+	}
+
+	App::MainContext::cellGrid.setPlayerMovement(direction);
+}
+
+void App_updateCellGrid(void) {
+	Uint64 const deltaTimeMilliseconds{App::MainContext::updateDeltaTime()};
+	if (App::MainContext::cellGridUpdateTimer.update(deltaTimeMilliseconds)) App::MainContext::cellGrid.update();
+}
+
+void App_drawCellGrid(void) {
+	App::MainContext::drawCellGrid(App::MainContext::cellGrid);
+}
+
+void App_renderCanvas(void) {
+	SDL_RenderPresent(App::MainContext::renderer);
+}
+
 int main(int const argCount, char **const argList) {
-	#if true
 	cob_init(argCount, argList);
-	#else
-	// Don't pass command line arguments.
-	cob_init(int{0}, nullptr);
-	#endif
-
 	App::MainContext::initialize();
-
-	int const exitCode = cobol_main();
+	std::atexit(+[]() -> void { cob_tidy(); });
 
 	#ifdef __EMSCRIPTEN__
 	/*
@@ -111,22 +105,11 @@ int main(int const argCount, char **const argList) {
 	}
 	#endif
 
-	// Start the main loop.
 	#ifdef __EMSCRIPTEN__
-	/*
-		Note to self:
-
-		`simulate_infinite_loop` is `true`, so will not continue execution after this function ends.
-
-		"...if simulate_infinite_loop is false, and you created an object on the stack,
-		it will be cleaned up before the main loop is called for the first time."
-		(https://emscripten.org/docs/api_reference/emscripten.h.html#id3)
-	*/
-	emscripten_set_main_loop(&App::mainLoop, -1, true);
+	emscripten_set_main_loop(&App_mainLoop, -1, true);
 	#else
-	while (true) App::mainLoop();
-	cob_tidy();
+	while (true) App_mainLoop();
 	#endif
 
-	return exitCode;
+	return EXIT_SUCCESS;
 }

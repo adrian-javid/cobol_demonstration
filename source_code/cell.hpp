@@ -7,7 +7,8 @@
 namespace App {class Cell {
 	public:
 		struct Request {
-			Direction movement;
+			Direction movement{Direction::none};
+			bool createWorkerCell{false};
 		};
 
 		enum struct Color : std::uint_least8_t { red, blue };

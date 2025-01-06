@@ -11,6 +11,7 @@
 
 #include "player_cell.hpp"
 #include "worker_cell.hpp"
+#include <span>
 
 namespace App {class CellGrid final {
 	public:
@@ -32,7 +33,9 @@ namespace App {class CellGrid final {
 
 		void update();
 
-		void putNewWorkerCell(CellGridKey const &workerStartLocation, CellGridKey const &workerCellTargetLocation);
+		void attemptPutNewWorkerCell(CellGridKey const &workerStartLocation);
+
+		void addWorkerCellTargets(std::span<CellGridKey const> const additionalTargets);
 
 		[[nodiscard]]
 		static constexpr std::size_t getFlatIndex(CellGridKey const &key, std::size_t const columnCount) {
@@ -52,6 +55,7 @@ namespace App {class CellGrid final {
 		PlayerCell playerCell;
 		std::size_t rowCount{}, columnCount{};
 		std::underlying_type_t<CellIdentifier> availableWorkerCellIdentifierValue{1};
+		std::vector<CellGridKey> workerCellTargetLocationList;
 		Cell::Color currentCellColor{Cell::getFirstColor()};
 
 		[[nodiscard]]

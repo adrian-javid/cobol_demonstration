@@ -18,10 +18,23 @@ void App::CellGrid::setPlayerMovement(Direction const direction) {
 	this->playerCell.movement = direction;
 }
 
-auto App::CellGrid::putNewWorkerCell(CellGridKey const &workerStartLocation, CellGridKey const &workerCellTargetLocation) -> void {
+auto App::CellGrid::attemptPutNewWorkerCell(CellGridKey const &workerStartLocation) -> void {
+	if (this->workerCellTargetLocationList.empty()) return;
+
+	CellGridKey const workerCellTargetLocation(this->workerCellTargetLocationList.back());
+	this->workerCellTargetLocationList.pop_back();
+
 	CellIdentifier const cellIdentifier{availableWorkerCellIdentifierValue++};
 	this->workerCellRegistry.try_emplace(cellIdentifier, workerCellTargetLocation);
 	(*this)[workerStartLocation].emplace(cellIdentifier);
+}
+
+void App::CellGrid::addWorkerCellTargets(std::span<CellGridKey const> const additionalTargets) {
+	this->workerCellTargetLocationList.insert(
+		this->workerCellTargetLocationList.end(),
+		additionalTargets.begin(),
+		additionalTargets.end()
+	);
 }
 
 void App::CellGrid::update() {
@@ -43,6 +56,10 @@ void App::CellGrid::update() {
 
 				if (cell.getColor() == this->currentCellColor) {
 					Cell::Request const request = cell.update(currentLocation);
+
+					if (request.createWorkerCell == true) {
+						attemptPutNewWorkerCell(currentLocation);
+					}
 					
 					if (request.movement != Direction::none) {
 						CellGridKey const targetLocation(currentLocation + CellGridKey::getDirection(request.movement));

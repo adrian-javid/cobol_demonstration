@@ -3,6 +3,12 @@
 #include "cell.hpp"
 
 namespace App {class WorkerCell final : public Cell {
+	public:
+		[[nodiscard]]
+		inline explicit WorkerCell(CellGridKey const targetLocationParam):
+			targetLocation(targetLocationParam)
+		{}
+
 	private:
 		CellGridKey targetLocation;
 

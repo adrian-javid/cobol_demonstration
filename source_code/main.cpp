@@ -122,7 +122,7 @@ int main(int const argCount, char **const argList) {
 		it will be cleaned up before the main loop is called for the first time."
 		(https://emscripten.org/docs/api_reference/emscripten.h.html#id3)
 	*/
-	emscripten_set_main_loop(&mainLoop, -1, true);
+	emscripten_set_main_loop(&App::mainLoop, -1, true);
 	#else
 	while (true) App::mainLoop();
 	cob_tidy();

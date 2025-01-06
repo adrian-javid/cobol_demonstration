@@ -21,7 +21,7 @@ namespace App::MainContext {
 	Timer cellGridUpdateTimer(Timer::oneSecond / 64u);
 }
 
-void App_processEvents(void) {
+int App_processEvents(void) {
 	for (SDL_Event event; SDL_PollEvent(&event);) switch (event.type) {
 		case SDL_KEYDOWN: switch (event.key.keysym.sym) {
 			case SDLK_BACKQUOTE:
@@ -40,9 +40,11 @@ void App_processEvents(void) {
 			std::exit(EXIT_SUCCESS);
 			break;
 	}
+
+	return {};
 }
 
-void App_processKeyboardInput(void) {
+int App_processKeyboardInput(void) {
 	App::CellGridKey directionVector{0, 0};
 	if (App::MainContext::keyboardState[SDL_SCANCODE_UP   ]) directionVector.value0 -= 1;
 	if (App::MainContext::keyboardState[SDL_SCANCODE_DOWN ]) directionVector.value0 += 1;
@@ -59,19 +61,24 @@ void App_processKeyboardInput(void) {
 	}
 
 	App::MainContext::cellGrid.setPlayerMovement(direction);
+
+	return {};
 }
 
-void App_updateCellGrid(void) {
+int App_updateCellGrid(void) {
 	Uint64 const deltaTimeMilliseconds{App::MainContext::updateDeltaTime()};
 	if (App::MainContext::cellGridUpdateTimer.update(deltaTimeMilliseconds)) App::MainContext::cellGrid.update();
+	return {};
 }
 
-void App_drawCellGrid(void) {
+int App_drawCellGrid(void) {
 	App::MainContext::drawCellGrid(App::MainContext::cellGrid);
+	return {};
 }
 
-void App_renderCanvas(void) {
+int App_renderCanvas(void) {
 	SDL_RenderPresent(App::MainContext::renderer);
+	return {};
 }
 
 int main(int const argCount, char **const argList) {
@@ -106,7 +113,7 @@ int main(int const argCount, char **const argList) {
 	#endif
 
 	#ifdef __EMSCRIPTEN__
-	emscripten_set_main_loop(&App_mainLoop, -1, true);
+	emscripten_set_main_loop(+[]() -> void { App_mainLoop(); }, -1, true);
 	#else
 	while (true) App_mainLoop();
 	#endif

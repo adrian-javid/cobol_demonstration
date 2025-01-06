@@ -12,13 +12,13 @@ namespace App::MainContext {
 extern "C" int App_mainLoop(void);
 
 extern "C" {
-	void App_processEvents(void);
+	int App_processEvents(void);
 
-	void App_processKeyboardInput(void);
+	int App_processKeyboardInput(void);
 
-	void App_updateCellGrid(void);
+	int App_updateCellGrid(void);
 
-	void App_drawCellGrid(void);
+	int App_drawCellGrid(void);
 
-	void App_renderCanvas(void);
+	int App_renderCanvas(void);
 }

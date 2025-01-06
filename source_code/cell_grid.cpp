@@ -1,5 +1,7 @@
 #include "cell_grid.hpp"
 
+#include "player_cell.hpp"
+
 App::CellGrid::CellGrid(
 	std::size_t const rowCountParam,
 	std::size_t const columnCountParam
@@ -8,6 +10,11 @@ App::CellGrid::CellGrid(
 	rowCount{rowCountParam},
 	columnCount{columnCountParam}
 {}
+
+auto App::CellGrid::putNewWorkerCell(CellGridKey const &workerCellStartLocation) -> void {
+	CellIdentifier const cellIdentifier{availableWorkerCellIdentifierValue++};
+	this->workerCellRegistry.try_emplace(cellIdentifier, workerCellStartLocation);
+}
 
 void App::CellGrid::update() {
 	for (std::size_t rowIndex{0}; rowIndex < this->rowCount; ++rowIndex) {
@@ -23,12 +30,11 @@ void App::CellGrid::update() {
 				auto cellIdentifierIterator = cellGroup.begin();
 				cellIdentifierIterator != cellGroup.end();
 			) {
-				CellIdentifier const cellIdentifier(std::move(*cellIdentifierIterator));
-				std::unique_ptr<Cell> const &cellPointer = this->cellRegistry.at(cellIdentifier);
-				if (cellPointer == nullptr) throw std::logic_error("Null cell pointer.");
+				CellIdentifier const cellIdentifier(*cellIdentifierIterator);
+				Cell &cell = this->getCell(cellIdentifier);
 
-				if (cellPointer->getColor() == this->currentCellColor) {
-					Cell::Request const request = cellPointer->update(currentLocation);
+				if (cell.getColor() == this->currentCellColor) {
+					Cell::Request const request = cell.update(currentLocation);
 					
 					if (request.movement != Direction::none) {
 						CellGridKey const targetLocation(currentLocation + CellGridKey::getDirection(request.movement));
@@ -53,4 +59,14 @@ void App::CellGrid::update() {
 auto App::CellGrid::operator[](CellGridKey const &key) -> decltype(table)::value_type & {
 	std::size_t const flatIndex{getFlatIndex(key, this->columnCount)};
 	return this->table[flatIndex];
+}
+
+[[nodiscard]]
+auto App::CellGrid::getCell(CellIdentifier const cellIdentifier) -> Cell & {
+	switch (cellIdentifier) {
+		case CellIdentifier::player:
+			return this->playerCell;
+		default:
+			return this->workerCellRegistry.at(cellIdentifier);
+	}
 }

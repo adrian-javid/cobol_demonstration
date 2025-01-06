@@ -9,29 +9,24 @@ auto App::CellGrid::makeFromStringCanvas() -> CellGrid {
 
 	std::vector<CellGridKey> workerTargetLocations;
 
-	for (
-		auto valueIterator = stringCanvas.cbegin() + 1;
-		valueIterator != stringCanvas.cend();
-		++valueIterator
-	) {
-		char const value{*valueIterator};
-		switch (value) {
-			case 'x':
-				workerTargetLocations.push_back(currentLocation);
-				break;
-			case '\n':
-				currentLocation.value0 = -1;
-				++currentLocation.value1;
-				break;
-		}
+	CellGrid grid(10, 78);
+	for (CellGridKey::Value rowIndex{0}; rowIndex < grid.getRowCount(); ++rowIndex) {
+		for (CellGridKey::Value columnIndex{0}; columnIndex < grid.getColumnCount(); ++columnIndex) {
+			CellGridKey::Value const flatIndex{
+				/* leading newline */1 + rowIndex * (grid.getColumnCount() + /* trailing newline */1) + columnIndex
+			};
 
-		++currentLocation.value0;
+			switch (stringCanvas.at(flatIndex)) {
+				case 'x':
+					workerTargetLocations.push_back({rowIndex, columnIndex});
+					break;
+			}
+		}
 	}
 
 	std::mt19937 randomNumberGenerator((std::random_device()()));
-
 	std::shuffle(workerTargetLocations.begin(), workerTargetLocations.end(), randomNumberGenerator);
 
-	CellGrid grid(10, 78);
+	grid.addWorkerCellTargets(workerTargetLocations);
 	return grid;
 }

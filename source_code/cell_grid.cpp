@@ -33,10 +33,14 @@ void App::CellGrid::update() {
 						CellGridKey const targetLocation(currentLocation + CellGridKey::getDirection(request.movement));
 						(*this)[targetLocation].emplace(cellPointer);
 						cellPointerIterator = cellGroup.erase(cellPointerIterator);
+					} else {
+						++cellPointerIterator;
 					}
-				} else {
-					++cellPointerIterator;
+
+					continue;
 				}
+
+				++cellPointerIterator;
 			}
 
 		}

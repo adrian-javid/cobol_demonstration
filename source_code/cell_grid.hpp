@@ -21,9 +21,12 @@ namespace App {class CellGrid final {
 		[[nodiscard]]
 		explicit CellGrid(std::size_t const rowCount, std::size_t const columnCount);
 
+		[[nodiscard]]
+		static CellGrid makeFromStringCanvas();
+
 		void update();
 
-		void putNewWorkerCell(CellGridKey const &workerCellStartLocation);
+		void putNewWorkerCell(CellGridKey const &workerStartLocation, CellGridKey const &workerCellTargetLocation);
 
 		[[nodiscard]]
 		static constexpr std::size_t getFlatIndex(CellGridKey const &key, std::size_t const columnCount) {

@@ -11,9 +11,10 @@ App::CellGrid::CellGrid(
 	columnCount{columnCountParam}
 {}
 
-auto App::CellGrid::putNewWorkerCell(CellGridKey const &workerCellStartLocation) -> void {
+auto App::CellGrid::putNewWorkerCell(CellGridKey const &workerStartLocation, CellGridKey const &workerCellTargetLocation) -> void {
 	CellIdentifier const cellIdentifier{availableWorkerCellIdentifierValue++};
-	this->workerCellRegistry.try_emplace(cellIdentifier, workerCellStartLocation);
+	this->workerCellRegistry.try_emplace(cellIdentifier, workerCellTargetLocation);
+	(*this)[workerStartLocation].emplace(cellIdentifier);
 }
 
 void App::CellGrid::update() {

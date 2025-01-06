@@ -28,4 +28,4 @@
 002800*
 002900 PROCEDURE DIVISION.
 003000     DISPLAY 'Hello world.'.
-003100     DISPLAY 'I will win.'.
+           CALL "printSentence".

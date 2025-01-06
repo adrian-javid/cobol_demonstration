@@ -2,7 +2,7 @@
 
 #include <string_view>
 
-namespace App { static constexpr std::string_view stringCanvas{
+namespace App {static constexpr std::string_view stringCanvas{
 R"(
                                                                               
        xxxxxx        xxxxxxxx      xxxxxxxx         xxxxxx      xx            

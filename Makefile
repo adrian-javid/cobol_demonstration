@@ -19,7 +19,7 @@ COB_CONFIG := cobol_to_webassembly/build/native/libraries/bin/cob-config
 # Not using `$(shell ...)` here because `cob-config` may not be built yet.
 COMMON_C_AND_CPLUSPLUS_COMPILE_FLAGS := -O0 -g3 -MMD -MP $$(${COB_CONFIG} --cflags)
 
-CPLUSPLUS_COMPILE_FLAGS := #(empty string)
+CPLUSPLUS_COMPILE_FLAGS := -std=c++20
 LINK_FLAGS := -O0 -g3
 
 TARGET_DIR := ${BUILD_DIR}/artifact

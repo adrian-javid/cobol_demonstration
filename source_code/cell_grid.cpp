@@ -11,6 +11,10 @@ App::CellGrid::CellGrid(
 	columnCount{columnCountParam}
 {}
 
+void App::CellGrid::setPlayerMovement(Direction const direction) {
+	this->playerCell.movement = direction;
+}
+
 auto App::CellGrid::putNewWorkerCell(CellGridKey const &workerStartLocation, CellGridKey const &workerCellTargetLocation) -> void {
 	CellIdentifier const cellIdentifier{availableWorkerCellIdentifierValue++};
 	this->workerCellRegistry.try_emplace(cellIdentifier, workerCellTargetLocation);

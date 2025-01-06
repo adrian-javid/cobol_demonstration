@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <unordered_set>
+#include <unordered_map>
 #include <memory>
 #include "vector2.hpp"
 
@@ -24,7 +25,10 @@ namespace App {class CellGrid final {
 		}
 
 	private:
-		std::vector<std::unordered_set<std::unique_ptr<Cell>>> table;
+		enum struct CellIdentifier : std::size_t;
+
+		std::vector<std::unordered_set<CellIdentifier>> table;
+		std::unordered_map<CellIdentifier, std::unique_ptr<Cell>> cellRegistry;
 		std::size_t rowCount{}, columnCount{};
 		Cell::Color currentCellColor{Cell::getFirstColor()};
 

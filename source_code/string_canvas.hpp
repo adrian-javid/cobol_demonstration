@@ -4,15 +4,78 @@
 
 namespace App {static constexpr std::string_view stringCanvas{
 R"(
-                                                                              
-       xxxxxx        xxxxxxxx      xxxxxxxx         xxxxxx      xx            
-     xx     xx      xx      xxx    x       xx     xxx    xxx    xx            
-    xx       x      x         x    x     xxxx    xx        x    xx            
-    x              xx         x    xxxxxxxxx     x         x    xx            
-    x              xx         x    x       xx    x         x    xx            
-    x        x      x        xx    x        x    x         x    xx            
-    xx      xx      xx      xx     x      xxx    xx      xxx    xxxxxxxxxx    
-     xxxxxxxx        xxxxxxx       xxxxxxxx       xxxxxxx       xxxxxxxxxx    
-                                                                              
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                    xxxxxxx                                                                                                                                                                                        |
+|                              xxxxxxxxxxxxxxxxxxx                                                      xxxxxxxx xxxxx                                                       xxxx                                                   |
+|                           xxxxx             xxxxxx                   xxxx xx x x xxxx                 xxx           xxxxxxx                     xxxxxxxxxxxx               xxxx                                                   |
+|                          xxx                    xxx              xxxx          xxxxxxxx               xx                   xx               xxxxxxxxxxxxxxxxxxx            xxxx                                                   |
+|                         xx                       xx           xxx                 x   xx              xx                     x            xxx                 xx           xxxx                                                   |
+|                        xx                         xxx        xx                         xx            xx                     x          xx                     xx          xxx                                                    |
+|                      xxx                          xxx        x                            xx          xx                     x         xx                       xx         xxxx                                                   |
+|                     xxx                            xx      xx                              xx         x                     xx       xxx                          x         xxx                                                   |
+|                     xxx                                   x                                 x         x                     x        x                            xx       xxxx                                                   |
+|                     xx                                    x                                  x        x                    x        xx                             xx      xxxx                                                   |
+|                     xx                                   xx                                   x       x                   xx        x                              xx      xxxx                                                   |
+|                     xx                                   x                                    x       x                  xx        xx                              xx      xxxx                                                   |
+|                     xx                                   x                                    x       x               xxx          x                               xx      xxxx                                                   |
+|                     xx                                   x                                    x       x          xxxxx             x                              xxx      x x                                                    |
+|                     xx                                   x                                   xx       xxxxxxxxxxxxxx x             x                              xxx      x xx                                                   |
+|                     xxx                                  x                                   x        x               xx xxx       xx                            xxx       xxxx                                                   |
+|                     xxx                                  xx                                  x        x                    xxx      x                             xx       xxxx                                                   |
+|                      xx                           xx      x                                xx         xx                     x      xx                           xxx       xxx x                                                  |
+|                       xx                         xxx       x                              xx          xx                     x       x                           xxx       x xxx                                                  |
+|                         xx                       xx         xx                           xx           xx                     x       xxx                        xxx        xxxxx                                                  |
+|                          xxx                   xxxx           x                         xx            xxx                    x         xx                      xxxx        xxxxx                                                  |
+|                           xxxxx               xxx              xx                    xxx              xxx                    x          xx                   xxxxx         xxxxxxxxxxxx xxxxxx xxxx xxx                           |
+|                              xxxxxxxxxxxxxxxxxxx                xxx              xxxxx                xxx                   x            xx                xxx xx          xxxxxxxxxxxxxxxxxxxxxxxxxxxx                           |
+|                                  xxxxxxxxx                         xxxx xxxxxxxxx                     xxx                xxx              xxx             xxxxx            xxxxxxxxxxxxxxxxxxxxxxxxxxxx                           |
+|                                                                                                       xxxxxxx xxxxxx xxxxx                   xxxxxxxxxxxxxxx                                                                      |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
+|                                                                                                                                                                                                                                   |
++-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 )"
 };}
